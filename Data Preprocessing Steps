@@ -1,0 +1,74 @@
+# Data Exploration
+
+### Data Exploration consists of the following pipelines:
+1.	Data Ingestion
+2.	Data Description
+3.	Data Cleaning
+4.	Data Augmentation
+5.	Data Visualization
+6.	Data Aggregation and Results
+7.	Data Persistence
+8.	Sentiment Analysis
+
+
+## Data Ingestion:
+●	The data is in a csv format hence we use pandas.read_csv method with delimiter = “/t”
+●	We also skip some bad lines using error_bad_lines=False
+
+Data Description and Data Cleaning:
+●	We first see the number of columns in the dataframe. There are 16 columns. 
+	 
+●	We see that product_category, star_rating, review_date, total_votes, product_parent could be useful candidates to draw some analysis on sentiment
+●	To check the number of total records in the dataframe we can use the count method. We see that there are 6900886 records. There is one column with fewer count values, indicating null values.
+ 
+●	We remove any null/ na values using dropna()
+●	To check the data statistics for columns with continuous values we use describe() method. We can see that the mean star_rating is 4.3 and minimum = 1 with maximum being 5. 75th Percentile has 5 and 25th percentile as 4 star rating indicating unbalanced dataset.
+ 
+
+## Data Augmentation:
+
+●	As part of data augmentation we see that the sentiment analysis is a pure classification problem. Hence we bin the star_rating column into 2 categories - positive and negative. Negative = 0 < star_rating < 2.5 and Positive = 2.5 < star_rating < 5. 
+	 
+●	We see that the newly created column sentiment_rating is unbalanced. In order for us to balance this dataset we perform a data aggregation group by on sentiment_rating and from each group we sample 3000 records and append to a final_dataframe
+ 
+●	We also like to analyze the review_date column, hence we augment this column into separate fields of month, year, day of week, hour, using pandas datetime package.
+ 
+
+## Data Visualization:
+
+●	We check the types of product categories and the distribution of its count in the dataset using a group by on product_category and aggregating the index count. We can see that Mobile_apps, Digital_Ebooks and Video DVD have the highest number of reviews. Mobile_apps have 1260 reviews 
+ 
+●	We are interested in the number of reviews by date. We perform a group by on review_date and aggregate the count on the index field. This helps us give a time series based dataframe which we can plot using plotly.. The reason we use plotty is because plotty features zoom in capability. We can zoom into a particular span of interest to get more information by day or by month. Upon plotting we see that there are a greater number of reviews from 205 to 2016. After zooming into this period we can see that, the number of reviews are the greatest(25) in the month of January 2015
+  
+
+
+
+●	Next, we are interested in the month which have the highest reviews in the dataset. This will give us an understanding of the months when people generally buy amazon products and write reviews about it. We answer this question by performing a group by on the month field and aggregating the count on index
+ 
+ 
+●	We want to see how the ratings are distributed in the dataset. Hence we perform a groupby aggregation on start_rating and sentiment_rating field. We can clearly see that there are 50% reviews with rating = 2.0 and 35% reviews with rating 5.0 and 10% with rating 4.0. But running the same analysis on the augmented field sentiment_rating which is a categorical field based on star_rating we see that the positive and negative are both balanced.
+
+  
+
+
+
+●	Next, we want to check which category of products have high average star_rating and low average star_rating. We can achieve this with a box plot on the star_rating and product_category column. We see that Video_DVD, Mobile_Apps, Ebook, Music have 5.0 ratings in the third quartile. Whereas, kitchen products have a median rating of 2.0 and third quartile being 3.5.
+ 
+
+
+
+## Data Aggregation and Results:
+
+Based on our analysis so far, we have been able to answer the following questions:
+●	Which products has lower reviews - Kitchen, Sports and Watches
+●	Which products have higher reviews - Mobile Apps, Ebooks, Video DVD
+●	Which products have high and low rating - Mobile Apps, Ebook have high rating median 5.0 and Kitchen has low rating median 2.0.
+●	Which months have higher number of reviews - January, March and December
+●	Which year has the highest number of reviews - 2015
+
+## Data Persistence:
+●	We persist the cleaned dataset in a csv format for sentiment analysis 
+●	We use the to_csv method with index set to False and Heder set to True.
+●	Since we only need the review text and labels we omit the other columns and just save the 2 columns for further analysis.
+ 
+
